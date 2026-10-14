@@ -1,22 +1,15 @@
-import 'package:ecommerce_app_huma_volve/features/home/services/models/category_model.dart';
+import 'package:ecommerce_app_huma_volve/features/home/data/models/category_model.dart';
+import 'package:ecommerce_app_huma_volve/features/home/domain/entities/home_product_entity.dart';
 
-class ProductModel {
-  int? id;
-  String? title;
-  String? slug;
-  int? price;
-  String? description;
-  CategoryModel? category;
-  List<String>? images;
-
+class ProductModel extends HomeProductEntity {
   ProductModel({
-    this.id,
-    this.title,
-    this.slug,
-    this.price,
-    this.description,
-    this.category,
-    this.images,
+    super.id,
+    super.title,
+    super.slug,
+    super.price,
+    super.description,
+    super.category,
+    super.images,
   });
 
   ProductModel.fromJson(Map<String, dynamic> json) {

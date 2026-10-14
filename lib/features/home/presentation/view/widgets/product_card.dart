@@ -1,11 +1,11 @@
-import 'package:ecommerce_app_huma_volve/features/home/services/models/product_model.dart';
+import 'package:ecommerce_app_huma_volve/features/home/domain/entities/home_product_entity.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../core/theme.dart';
-import '../../../details/screens/product_details_screen.dart';
+import '../../../../../core/theme.dart';
+import '../../../../details/screens/product_details_screen.dart';
 
 class ProductCard extends StatelessWidget {
-  final ProductModel productModel;
+  final HomeProductEntity productModel;
 
   const ProductCard({super.key, required this.productModel});
 
@@ -53,9 +53,8 @@ class ProductCard extends StatelessWidget {
                         top: Radius.circular(24),
                       ),
                       child: Image.network(
-                        (productModel.images != null &&
-                                productModel.images!.isNotEmpty)
-                            ? productModel.images![0]
+                        (productModel.images.isNotEmpty)
+                            ? productModel.images[0]
                             : '',
                         fit: BoxFit.cover,
                         width: double.infinity,
@@ -103,7 +102,7 @@ class ProductCard extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     Text(
-                      productModel.title ?? "",
+                      productModel.title,
                       style: const TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: 16,
@@ -117,7 +116,7 @@ class ProductCard extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          '\$${productModel.price!.toStringAsFixed(2)}',
+                          '\$${productModel.price.toStringAsFixed(2)}',
                           style: const TextStyle(
                             color: AppTheme.primary,
                             fontWeight: FontWeight.bold,

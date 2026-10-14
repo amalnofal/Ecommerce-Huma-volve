@@ -1,13 +1,14 @@
 import 'package:ecommerce_app_huma_volve/core/constants/api_constants.dart';
 import 'package:ecommerce_app_huma_volve/core/network/api_client.dart';
-import 'package:ecommerce_app_huma_volve/features/home/services/models/category_model.dart';
-import 'package:ecommerce_app_huma_volve/features/home/services/models/product_model.dart';
+import 'package:ecommerce_app_huma_volve/features/home/data/datasources/home_remote_datasource.dart';
+import 'package:ecommerce_app_huma_volve/features/home/data/models/category_model.dart';
+import 'package:ecommerce_app_huma_volve/features/home/data/models/product_model.dart';
 
-class HomeService {
+class HomeRemoteDatasourceImpl implements HomeRemoteDatasource {
   final ApiClient apiClient;
+  HomeRemoteDatasourceImpl(this.apiClient);
 
-  HomeService(this.apiClient);
-
+  @override
   Future<List<CategoryModel>> getCategories() async {
     final response = await apiClient.dio.get(ApiConstants.categoriesEndpoint);
 
@@ -19,9 +20,10 @@ class HomeService {
     return categories;
   }
 
+  @override
   Future<List<ProductModel>> getProducts(int? categoryId) async {
     final response = await apiClient.dio.get(
-      "${ApiConstants.categoriesEndpoint}/$categoryId/${ApiConstants.productsEndpoint}",
+      "${ApiConstants.categoriesEndpoint}77/$categoryId/${ApiConstants.productsEndpoint}",
     );
     final List<dynamic> jsonData = response.data;
     final List<ProductModel> products = jsonData

@@ -1,11 +1,16 @@
 import 'package:ecommerce_app_huma_volve/core/network/api_client.dart';
-import 'package:ecommerce_app_huma_volve/features/home/cubit/home_cubit.dart';
-import 'package:ecommerce_app_huma_volve/features/home/services/home_service.dart';
+import 'package:ecommerce_app_huma_volve/features/home/data/datasources/home_remote_datasource.dart';
+import 'package:ecommerce_app_huma_volve/features/home/data/datasources/home_remote_datasource_impl.dart';
+import 'package:ecommerce_app_huma_volve/features/home/data/repositories/home_repo_impl.dart';
+import 'package:ecommerce_app_huma_volve/features/home/domain/repositories/home_repo.dart';
+import 'package:ecommerce_app_huma_volve/features/home/domain/usecases/get_categories_usecase.dart';
+import 'package:ecommerce_app_huma_volve/features/home/domain/usecases/get_products_usecase.dart';
+import 'package:ecommerce_app_huma_volve/features/home/presentation/view_model/cubit/home_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../core/theme.dart';
-import '../../home/screens/home_screen.dart';
+import '../../home/presentation/view/home_screen.dart';
 import '../../cart/screens/cart_screen.dart';
 import '../../profile/screens/profile_screen.dart';
 
@@ -19,14 +24,25 @@ class MainNavigationScreen extends StatefulWidget {
 class _MainNavigationScreenState extends State<MainNavigationScreen> {
   int _currentIndex = 0;
   late final ApiClient apiClient;
-  late final HomeService homeService;
+  late final HomeRemoteDatasource homeRemoteDatasource;
+  late final HomeRepo homeRepo;
+  late final GetCategoriesUsecase getCategoriesUsecase;
+  late final GetProductsUsecase getProductsUsecase;
   late final HomeCubit homeCubit;
 
   @override
   void initState() {
     apiClient = ApiClient();
-    homeService = HomeService(apiClient);
-    homeCubit = HomeCubit(homeService);
+    homeRemoteDatasource = HomeRemoteDatasourceImpl(apiClient);
+
+    homeRepo = HomeRepoImpl(homeRemoteDatasource);
+    getCategoriesUsecase = GetCategoriesUsecase(homeRepo);
+    getProductsUsecase = GetProductsUsecase(homeRepo);
+
+    homeCubit = HomeCubit(
+      getCategoriesUsecase: getCategoriesUsecase,
+      getProductsUsecase: getProductsUsecase,
+    );
     super.initState();
   }
 
