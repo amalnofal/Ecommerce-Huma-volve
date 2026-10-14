@@ -23,7 +23,7 @@ class HomeRemoteDatasourceImpl implements HomeRemoteDatasource {
   @override
   Future<List<ProductModel>> getProducts(int? categoryId) async {
     final response = await apiClient.dio.get(
-      "${ApiConstants.categoriesEndpoint}77/$categoryId/${ApiConstants.productsEndpoint}",
+      "${ApiConstants.categoriesEndpoint}/$categoryId/${ApiConstants.productsEndpoint}",
     );
     final List<dynamic> jsonData = response.data;
     final List<ProductModel> products = jsonData
