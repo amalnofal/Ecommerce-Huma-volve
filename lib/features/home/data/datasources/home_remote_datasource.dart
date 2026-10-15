@@ -2,6 +2,10 @@ import 'package:ecommerce_app_huma_volve/features/home/data/models/category_mode
 import 'package:ecommerce_app_huma_volve/features/home/data/models/product_model.dart';
 
 abstract class HomeRemoteDatasource {
-  Future<List<ProductModel>> getProducts(int? categoryId);
+  Future<List<ProductModel>> getProducts(
+    int? categoryId, {
+    required int limit,
+    required int offset,
+  });
   Future<List<CategoryModel>> getCategories();
 }

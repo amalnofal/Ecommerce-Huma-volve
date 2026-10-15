@@ -1,9 +1,12 @@
+import 'package:ecommerce_app_huma_volve/core/di/service_locator.dart';
 import 'package:flutter/material.dart';
 
 import 'core/theme.dart';
 import 'features/splash/screens/splash_screen.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await getItsetup();
   runApp(const MyApp());
 }
 
