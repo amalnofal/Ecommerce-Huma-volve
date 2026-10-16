@@ -1,8 +1,8 @@
 import 'package:ecommerce_app_huma_volve/core/di/service_locator.dart';
+import 'package:ecommerce_app_huma_volve/core/routes/app_routing.dart';
 import 'package:flutter/material.dart';
 
 import 'core/theme.dart';
-import 'features/splash/screens/splash_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,11 +15,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
+      routerConfig: appRouting,
       title: 'E-Commerce App',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
-      home: const SplashScreen(),
+      // home: const SplashScreen(),
     );
   }
 }

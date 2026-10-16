@@ -37,4 +37,15 @@ class HomeRepoImpl implements HomeRepo {
       return Left(ErrorHandler.handle(e));
     }
   }
+
+
+ @override
+Future<Either<Failure, HomeProductEntity>> getProductById(int id) async {
+  try {
+    final product = await homeRemoteDatasource.getProductById(id);
+    return Right(product);
+  } catch (e) {
+    return Left(ErrorHandler.handle(e));
+  }
+}
 }

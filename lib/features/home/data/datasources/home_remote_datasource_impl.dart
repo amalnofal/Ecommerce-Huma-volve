@@ -37,4 +37,12 @@ class HomeRemoteDatasourceImpl implements HomeRemoteDatasource {
 
     return products;
   }
+
+    @override
+  Future<ProductModel> getProductById(int id) async {
+    final response = await apiClient.dio.get(
+      "${ApiConstants.productsEndpoint}/$id",
+    );
+    return ProductModel.fromJson(response.data);
+  }
 }

@@ -1,26 +1,56 @@
+import 'package:ecommerce_app_huma_volve/core/network/api_client.dart';
+import 'package:ecommerce_app_huma_volve/features/details/widgets/share_product_button.dart';
+import 'package:ecommerce_app_huma_volve/features/home/data/datasources/home_remote_datasource_impl.dart';
+import 'package:ecommerce_app_huma_volve/features/home/data/repositories/home_repo_impl.dart';
 import 'package:ecommerce_app_huma_volve/features/home/domain/entities/home_product_entity.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../core/theme.dart';
 import '../../../core/widgets/primary_button.dart';
 
 class ProductDetailsScreen extends StatefulWidget {
-  final HomeProductEntity productModel;
+  final int productId;
 
-  const ProductDetailsScreen({super.key, required this.productModel});
+  const ProductDetailsScreen({super.key, required this.productId});
 
   @override
   State<ProductDetailsScreen> createState() => _ProductDetailsScreenState();
 }
 
 class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
+  HomeProductEntity? _product;
+  bool _isLoading = true;
+
   @override
   void initState() {
     super.initState();
+    _loadProduct();
+  }
+
+  Future<void> _loadProduct() async {
+    final homeRepo = HomeRepoImpl(HomeRemoteDatasourceImpl(ApiClient()));
+    final result = await homeRepo.getProductById(widget.productId);
+    if (!mounted) return;
+    result.fold(
+      (failure) => setState(() => _isLoading = false),
+      (product) => setState(() {
+        _product = product;
+        _isLoading = false;
+      }),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    if (_isLoading) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+    final product = _product;
+    if (product == null) {
+      return const Scaffold(body: Center(child: Text('Product not found')));
+    }
+
     return Scaffold(
       backgroundColor: AppTheme.background,
       body: CustomScrollView(
@@ -38,7 +68,13 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                 ),
                 child: const Icon(Icons.arrow_back_ios_new, size: 16),
               ),
-              onPressed: () => Navigator.pop(context),
+              onPressed: () {
+                if (Navigator.canPop(context)) {
+                  Navigator.pop(context);
+                } else {
+                  context.go('/');
+                }
+              },
             ),
             actions: [
               IconButton(
@@ -53,14 +89,12 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                 onPressed: () {},
               ),
               const SizedBox(width: 8),
+              ShareProductButton(productId: product.id.toString()),
             ],
             flexibleSpace: FlexibleSpaceBar(
               background: Hero(
-                tag: 'product-${widget.productModel.id}',
-                child: Image.network(
-                  widget.productModel.images[0],
-                  fit: BoxFit.cover,
-                ),
+                tag: 'product-${product.id}',
+                child: Image.network(product.images[0], fit: BoxFit.cover),
               ),
             ),
           ),
@@ -82,14 +116,14 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                       children: [
                         Expanded(
                           child: Text(
-                            widget.productModel.title,
+                            product.title,
                             style: Theme.of(context).textTheme.headlineLarge
                                 ?.copyWith(fontSize: 28, height: 1.2),
                           ),
                         ),
                         const SizedBox(width: 16),
                         Text(
-                          '\$${widget.productModel.price.toStringAsFixed(2)}',
+                          '\$${product.price.toStringAsFixed(2)}',
                           style: Theme.of(context).textTheme.headlineLarge
                               ?.copyWith(color: AppTheme.primary, fontSize: 24),
                         ),
@@ -103,7 +137,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      widget.productModel.description,
+                      product.description,
                       style: Theme.of(context).textTheme.bodyMedium
                           ?.copyWith(height: 1.6, fontSize: 16),
                     ),
@@ -145,9 +179,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                       onPressed: () {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            content: Text(
-                              '${widget.productModel.title} added to cart',
-                            ),
+                            content: Text('${product.title} added to cart'),
                             behavior: SnackBarBehavior.floating,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),

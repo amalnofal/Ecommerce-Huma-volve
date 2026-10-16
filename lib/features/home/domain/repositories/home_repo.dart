@@ -10,4 +10,6 @@ abstract class HomeRepo {
     required int limit,
     required int offset,
   });
+
+  Future<Either<Failure, HomeProductEntity>> getProductById(int id);
 }
